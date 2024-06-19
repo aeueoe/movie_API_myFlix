@@ -16,12 +16,11 @@ let topFilms = [
 ];
 
 app.use(morgan("combined"));
+app.use(express.static("public"));
 
 app.get("/", (req, res) => {
   res.send("Welcome to my App");
 });
-
-app.use(express.static("public"));
 
 app.get("/movies", (req, res) => {
   res.json(topFilms);
