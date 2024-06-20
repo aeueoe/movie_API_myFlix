@@ -11,6 +11,66 @@
     <h1>API myFlix</h1>
     <p>This application provides access to information about different movies, directors, and genres. Users can sign up,
         update their personal information, and create a list of their favorite movies.</p>
+
+    <h2>Endpoints</h2>
+
+    <table>
+        <tr>
+            <th>Request</th>
+            <th>URL</th>
+            <th>Response</th>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/users</td>
+            <td>Returns a list of all users</td>
+        </tr>
+        <tr>
+            <td>POST</td>
+            <td>/users</td>
+            <td>Creates a new user</td>
+        </tr>
+        <tr>
+            <td>PUT</td>
+            <td>/users/:id</td>
+            <td>Updates a user's information</td>
+        </tr>
+        <tr>
+            <td>POST</td>
+            <td>/users/:id/:filmTitle</td>
+            <td>Adds a movie to a user's favorite list</td>
+        </tr>
+        <tr>
+            <td>DELETE</td>
+            <td>/users/:id/:filmTitle</td>
+            <td>Removes a movie from a user's favorite list</td>
+        </tr>
+        <tr>
+            <td>DELETE</td>
+            <td>/users/:id</td>
+            <td>Deletes a user</td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/films</td>
+            <td>Returns a list of all movies</td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/films/:title</td>
+            <td>Returns information about a specific movie</td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/films/genre/:genreName</td>
+            <td>Returns information about a specific genre</td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/films/directors/:directorName</td>
+            <td>Returns information about a specific director</td>
+        </tr>
+    </table>
 </body>
 
 </html>
