@@ -46,12 +46,6 @@
             <td>N/A</td>
         </tr>
         <tr>
-            <td>GET</td>
-            <td>/users/:id/favorites</td>
-            <td>Returns a list of a user's favorite movies</td>
-            <td>N/A</td>
-        </tr>
-        <tr>
             <td>POST</td>
             <td>/users</td>
             <td>Creates a new user</td>
@@ -59,26 +53,59 @@
         </tr>
         <tr>
             <td>PUT</td>
-            <td>/users/:id</td>
+            <td>/users/:name</td>
             <td>Updates a user's information</td>
             <td>{"name": "", "email": "", "password": "", "birthday": ""}</td>
         </tr>
         <tr>
             <td>POST</td>
-            <td>/users/:id/favorites/:movieId</td>
+            <td>/users/:id/favoriteMovies</td>
             <td>Adds a movie to a user's favorite list</td>
             <td>{"movieId": ""}</td>
         </tr>
         <tr>
             <td>DELETE</td>
-            <td>/users/:id/favorites/:movieId</td>
+            <td>/users/:id/favoriteMovies/:movieId</td>
             <td>Removes a movie from a user's favorite list</td>
             <td>N/A</td>
         </tr>
         <tr>
             <td>DELETE</td>
-            <td>/users/:id</td>
+            <td>/users/:name</td>
             <td>Deletes a user</td>
+            <td>N/A</td>
+        </tr>
+        <!-- Movie Endpoints -->
+        <tr>
+            <td>GET</td>
+            <td>/movies</td>
+            <td>Returns a list of all movies</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/movies/:title</td>
+            <td>Returns information about a specific movie</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/movies/genres/:genreName</td>
+            <td>Returns information about a specific genre</td>
+            <td>N/A</td>
+        </tr>
+
+        <!-- Director Endpoints -->
+        <tr>
+            <td>GET</td>
+            <td>/directors</td>
+            <td>Returns a list of all directors</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <td>GET</td>
+            <td>/directors/:directorName</td>
+            <td>Returns information about a specific director</td>
             <td>N/A</td>
         </tr>
     </table>
