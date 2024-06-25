@@ -138,12 +138,10 @@ app.post("/users/:name/favoriteMovies/:movieId", async (req, res) => {
 
     const user = await User.findOne({ name: userName }).exec();
     if (user) {
-      // Check if the movieId is a valid ObjectId
-      if (mongoose.Types.ObjectId.isValid(movieId)) {
+            if (mongoose.Types.ObjectId.isValid(movieId)) {
         const movie = await Movie.findById(movieId).exec();
         if (movie) {
-          // Check if the movie is already in user's favorites
-          if (user.favoriteMovies.includes(movieId)) {
+                  if (user.favoriteMovies.includes(movieId)) {
             res.status(400).send("Movie already exists in favorites");
           } else {
             user.favoriteMovies.push(movieId);
