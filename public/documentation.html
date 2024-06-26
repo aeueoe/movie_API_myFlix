@@ -49,29 +49,29 @@
             <td>POST</td>
             <td>/users</td>
             <td>Creates a new user</td>
-            <td>{"name": "", "email": "", "password": "", "birthday": ""}</td>
+            <td>{"Username": "", "Email": "", "Password": "", "Birthday": ""}</td>
         </tr>
         <tr>
             <td>PUT</td>
-            <td>/users/:name</td>
+            <td>/users/:Username</td>
             <td>Updates a user's information</td>
-            <td>{"name": "", "email": "", "password": "", "birthday": ""}</td>
+            <td>{"Username": "", "Email": "", "Password": "", "Birthday": ""}</td>
         </tr>
         <tr>
             <td>POST</td>
-            <td>/users/:id/favoriteMovies</td>
+            <td>/users/:Username/favoriteMovies/:movieId</td>
             <td>Adds a movie to a user's favorite list</td>
             <td>{"movieId": ""}</td>
         </tr>
         <tr>
             <td>DELETE</td>
-            <td>/users/:id/favoriteMovies/:movieId</td>
+            <td>/users/:Username/favoriteMovies/:movieId</td>
             <td>Removes a movie from a user's favorite list</td>
             <td>N/A</td>
         </tr>
         <tr>
             <td>DELETE</td>
-            <td>/users/:name</td>
+            <td>/users/:Username</td>
             <td>Deletes a user</td>
             <td>N/A</td>
         </tr>

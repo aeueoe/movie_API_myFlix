@@ -25,10 +25,10 @@ const movieSchema = new Schema({
 // User Schema
 
 const userSchema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  birthday: { type: Date },
+  Username: { type: String, required: true },
+  Email: { type: String, required: true, unique: true },
+  Password: { type: String, required: true },
+  Birthday: { type: Date },
   favoriteMovies: [{ type: Schema.Types.ObjectId, ref: "Movie" }],
 });
 
