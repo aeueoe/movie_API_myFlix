@@ -142,13 +142,8 @@ app.post(
     check("Password", "Password must be at least 6 characters long.").isLength({
       min: 6,
     }),
-    check("Email", "Email does not appear to be valid").isEmail(),
-    body("Email").custom((value) => {
-      if (!value.includes("@")) {
-        throw new Error("Email must contain '@' sign");
-      }
-      return true;
-    }),
+    check("Email", "Email address is required").not().isEmpty(),
+    check("Email", "Email does not appear to be valid.").isEmail(),
   ],
   async (req, res) => {
     let errors = validationResult(req);
@@ -157,13 +152,13 @@ app.post(
       return res.status(422).json({ errors: errors.array() });
     }
 
-    let hashedPassword = Users.hashPassword(req.body.Password);
-    await Users.findOne({ Username: req.body.Username })
+    let hashedPassword = User.hashPassword(req.body.Password);
+    await User.findOne({ Username: req.body.Username })
       .then((user) => {
         if (user) {
           return res.status(400).send(req.body.Username + " already exists");
         } else {
-          Users.create({
+          User.create({
             Username: req.body.Username,
             Password: hashedPassword,
             Email: req.body.Email,
@@ -202,13 +197,8 @@ app.put(
     check("Password", "Password must be at least 6 characters long.").isLength({
       min: 6,
     }),
-    check("Email", "Email does not appear to be valid").isEmail(),
-    body("Email").custom((value) => {
-      if (!value.includes("@")) {
-        throw new Error("Email must contain '@' sign");
-      }
-      return true;
-    }),
+    check("Email", "Email address is required").not().isEmpty(),
+    check("Email", "Email does not appear to be valid.").isEmail(),
   ],
   async (req, res) => {
     let errors = validationResult(req);
