@@ -28,7 +28,7 @@ These instructions will get you a copy of the project up and running on your loc
 
    ```sh
    git clone https://github.com/your-username/movie_API_myFlix.git
-   cd myflix-api
+   cd movie_API_myFlix
    ```
 
 2. Install dependencies:
@@ -68,7 +68,7 @@ The API is hosted on VErcel at: [https://movieapi-aeueoes-projects.vercel.app/](
 
   - Returns a list of all movies.
   - Authentication required.
-  - Example: `https://movieapi-aeueoes-projects.vercel.app//movies`
+  - Example: `https://movieapi-aeueoes-projects.vercel.app/movies`
 
 - **GET /movies/:Title**
 
