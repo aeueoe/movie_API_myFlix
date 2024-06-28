@@ -22,6 +22,19 @@ let auth = require("./auth")(app);
 const passport = require("passport");
 require("./passport");
 
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, "public")));
+
+// Serve the documentation.html file at the '/documentation.html' route
+app.get("/documentation.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "documentation.html"));
+});
+
+// Default text when "/"
+app.get("/", (req, res) => {
+  res.send("Hello from myFlix!");
+});
+
 // Return a list of ALL users
 app.get(
   "/users",
