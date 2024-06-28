@@ -16,8 +16,9 @@ mongoose
     console.log("Connected");
   })
   .catch((err) => {
-    console.error("Error connecting to DB:", err);
+    console.error("Error connecting to DB", err);
   });
+
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
