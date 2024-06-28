@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const morgan = require("morgan");
 const path = require("path");
 const { Movie, User } = require("./models");
 
@@ -19,12 +20,14 @@ mongoose
     console.error("Error connecting to DB", err);
   });
 
+const cors = require("cors");
+app.use(cors());
+
+// Middleware
+app.use(morgan("common"));
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
-
-const cors = require("cors");
-app.use(cors());
 
 let auth = require("./auth")(app);
 
