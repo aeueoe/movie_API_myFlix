@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const path = require("path");
 const { Movie, User } = require("./models");
 
 const { check, validationResult } = require("express-validator");
