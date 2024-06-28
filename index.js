@@ -7,10 +7,17 @@ const { Movie, User } = require("./models");
 
 const { check, validationResult } = require("express-validator");
 
-mongoose.connect(process.env.CONNECTION_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose
+  .connect(process.env.CONNECTION_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected");
+  })
+  .catch((err) => {
+    console.error("Error connecting to DB:", err);
+  });
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
