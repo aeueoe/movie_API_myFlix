@@ -140,6 +140,27 @@ app.get(
   }
 );
 
+// Return data about an actor by name
+app.get(
+  "/movies/actors/:actorName",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const actorName = req.params.actorName;
+      const movie = await Movie.findOne({ "Actor.Name": actorName });
+
+      if (movie) {
+        res.status(200).json(movie.Actor);
+      } else {
+        res.status(404).send("Actor not found");
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    }
+  }
+);
+
 // Allow new user to register
 app.post(
   "/users",
