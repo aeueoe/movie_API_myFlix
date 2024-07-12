@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const path = require("path");
-const { Movie, User } = require("./models");
+const { Movie, User, Actor, Director } = require("./models");
 
 const { check, validationResult } = require("express-validator");
 
@@ -62,19 +62,65 @@ app.get(
   }
 );
 
-// Return a list of ALL films
+// Return a list of ALL films with optional sorting
 app.get(
   "/movies",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    await Movie.find()
-      .then((movies) => {
-        res.status(201).json(movies);
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send("Error: " + error);
-      });
+    const sortField = req.query.sortBy;
+    const sortOrder = req.query.order === "desc" ? -1 : 1;
+
+    let sortOptions = {};
+    if (sortField) {
+      // Special handling for rating fields
+      if (sortField === "IMDb_Rating" || sortField === "RottenTomatoesRating") {
+        sortOptions[sortField] = sortOrder;
+      } else {
+        sortOptions[sortField] = sortOrder;
+      }
+    }
+
+    try {
+      let movies;
+      if (sortField === "IMDb_Rating" || sortField === "RottenTomatoesRating") {
+        // Convert rating fields to numbers for sorting and then project original values back
+        movies = await Movie.aggregate([
+          {
+            $addFields: {
+              SortableIMDbRating: {
+                $toDouble: {
+                  $arrayElemAt: [{ $split: ["$IMDb_Rating", " / "] }, 0],
+                },
+              },
+              SortableRottenTomatoesRating: {
+                $toDouble: {
+                  $arrayElemAt: [{ $split: ["$RottenTomatoesRating", "%"] }, 0],
+                },
+              },
+            },
+          },
+          {
+            $sort: {
+              [sortField === "IMDb_Rating"
+                ? "SortableIMDbRating"
+                : "SortableRottenTomatoesRating"]: sortOrder,
+            },
+          },
+          {
+            $project: {
+              SortableIMDbRating: 0,
+              SortableRottenTomatoesRating: 0,
+            },
+          },
+        ]);
+      } else {
+        movies = await Movie.find().sort(sortOptions).exec();
+      }
+      res.status(200).json(movies);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error: " + error);
+    }
   }
 );
 
@@ -119,17 +165,32 @@ app.get(
   }
 );
 
+// Return list of all directors
+app.get(
+  "/directors",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const directors = await Director.find();
+      res.status(200).json(directors);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    }
+  }
+);
+
 // Return data about a director by name
 app.get(
-  "/movies/directors/:directorName",
+  "/directors/:directorName",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const directorName = req.params.directorName;
-      const movie = await Movie.findOne({ "Director.Name": directorName });
+      const director = await Director.findOne({ Name: directorName });
 
-      if (movie) {
-        res.status(200).json(movie.Director);
+      if (director) {
+        res.status(200).json(director);
       } else {
         res.status(404).send("Director not found");
       }
@@ -140,17 +201,32 @@ app.get(
   }
 );
 
+// Return list of all actors
+app.get(
+  "/actors",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const actors = await Actor.find();
+      res.status(200).json(actors);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    }
+  }
+);
+
 // Return data about an actor by name
 app.get(
-  "/movies/actors/:actorName",
+  "/actors/:actorName",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const actorName = req.params.actorName;
-      const actors = await Actor.find({ Name: actorName });
+      const actor = await Actor.findOne({ Name: actorName });
 
-      if (actors.length > 0) {
-        res.status(200).json(actors[0]); 
+      if (actor) {
+        res.status(200).json(actor);
       } else {
         res.status(404).send("Actor not found");
       }
@@ -220,20 +296,20 @@ app.put(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
   [
-    check("Username", "Username is required").isLength({ min: 5 }),
+    check("Username", "Username is required").optional().isLength({ min: 5 }),
     check(
       "Username",
-      "Username contains non alphanumeric characters - not allowed."
-    ).isAlphanumeric(),
-    check("Password", "Password is required").not().isEmpty(),
-    check("Password", "Password must be at least 6 characters long.").isLength({
-      min: 6,
-    }),
-    check("Email", "Email address is required").not().isEmpty(),
-    check("Email", "Email does not appear to be valid.").isEmail(),
+      "Username contains non-alphanumeric characters - not allowed."
+    )
+      .optional()
+      .isAlphanumeric(),
+    check("Password", "Password must be at least 6 characters long.")
+      .optional()
+      .isLength({ min: 6 }),
+    check("Email", "Email address is not valid.").optional().isEmail(),
   ],
   async (req, res) => {
-    let errors = validationResult(req);
+    const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
@@ -242,58 +318,55 @@ app.put(
     if (req.user.Username !== req.params.Username) {
       return res.status(400).send("Permission denied");
     }
-    await User.findOneAndUpdate(
-      { Username: req.params.Username },
-      {
-        $set: {
-          Username: req.body.Username,
-          Password: req.body.Password,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday,
-        },
-      },
-      { new: true }
-    )
-      .then((updatedUser) => {
-        res.json({
-          user: updatedUser,
-          message: "User info updated successfully",
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).send("Error: " + err);
+
+    const updateFields = {};
+    if (req.body.Username) updateFields.Username = req.body.Username;
+    if (req.body.Password) updateFields.Password = req.body.Password;
+    if (req.body.Email) updateFields.Email = req.body.Email;
+
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { Username: req.params.Username },
+        { $set: updateFields },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({
+        user: updatedUser,
+        message: "User info updated successfully",
       });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error: " + err.message);
+    }
   }
 );
 // Allow users to add a film to their list of favorites
 app.post(
-  "/users/:Username/favoriteMovies/:movieId",
+  "/users/:Username/favoriteMovies/:movieTitle",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const userName = req.params.Username;
-      const movieId = req.params.movieId;
+      const movieTitle = req.params.movieTitle;
 
       const user = await User.findOne({ Username: userName }).exec();
       if (user) {
-        if (mongoose.Types.ObjectId.isValid(movieId)) {
-          const movie = await Movie.findById(movieId).exec();
-          if (movie) {
-            if (user.favoriteMovies.includes(movieId)) {
-              res.status(400).send("Movie already exists in favorites");
-            } else {
-              user.favoriteMovies.push(movieId);
-              await user.save();
-              res
-                .status(200)
-                .send(`${movie.Title} has been added to favorites`);
-            }
+        const movie = await Movie.findOne({ Title: movieTitle }).exec();
+        if (movie) {
+          if (user.favoriteMovies.includes(movie._id)) {
+            res.status(400).send("Movie already exists in favorites");
           } else {
-            res.status(404).send("Movie not found");
+            user.favoriteMovies.push(movie._id);
+            await user.save();
+            res.status(200).send(`${movie.Title} has been added to favorites`);
           }
         } else {
-          res.status(400).send("Invalid movie ID");
+          res.status(404).send("Movie not found");
         }
       } else {
         res.status(404).send("User not found");
@@ -307,25 +380,29 @@ app.post(
 
 // Allow users to remove a film from their list of favorites
 app.delete(
-  "/users/:Username/favoriteMovies/:movieId",
+  "/users/:Username/favoriteMovies/:movieTitle",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const userName = req.params.Username;
-      const movieId = req.params.movieId;
+      const movieTitle = req.params.movieTitle;
 
       const user = await User.findOne({ Username: userName }).exec();
 
       if (user) {
-        if (user.favoriteMovies.includes(movieId)) {
-          const movie = await Movie.findById(movieId).exec();
-          user.favoriteMovies.pull(movieId);
-          await user.save();
-          res
-            .status(200)
-            .send(`${movie.Title} has been removed from favorites`);
+        const movie = await Movie.findOne({ Title: movieTitle }).exec();
+        if (movie) {
+          if (user.favoriteMovies.includes(movie._id)) {
+            user.favoriteMovies.pull(movie._id);
+            await user.save();
+            res
+              .status(200)
+              .send(`${movie.Title} has been removed from favorites`);
+          } else {
+            res.status(404).send("Movie not found in favorites");
+          }
         } else {
-          res.status(404).send("Movie not found in favorites");
+          res.status(404).send("Movie not found");
         }
       } else {
         res.status(404).send("User not found");
