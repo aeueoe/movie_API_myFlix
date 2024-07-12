@@ -147,10 +147,10 @@ app.get(
   async (req, res) => {
     try {
       const actorName = req.params.actorName;
-      const movie = await Movie.findOne({ "Actor.Name": actorName });
+      const actors = await Actor.find({ Name: actorName });
 
-      if (movie) {
-        res.status(200).json(movie.Actor);
+      if (actors.length > 0) {
+        res.status(200).json(actors[0]); 
       } else {
         res.status(404).send("Actor not found");
       }
