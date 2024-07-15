@@ -47,6 +47,17 @@ app.get("/", (req, res) => {
   res.send("Hello from myFlix!");
 });
 
+// Return a list of ALL films
+app.get("/movies", async (req, res) => {
+  await Movie.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Error: " + error);
+    });
+});
 
 // Return data about a single film by title
 app.get(
