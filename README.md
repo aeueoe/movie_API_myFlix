@@ -1,117 +1,49 @@
 # MyFlix API
 
-This application provides access to information about different movies, directors, and genres. Users can sign up, update their personal information, and create a list of their favorite movies.
+## Objective
 
-## Table of Contents
+To build the server-side component of a “movies” web application. The web  application will provide users with access to information about different  movies, directors, and genres. Users will be able to sign up, update their  personal information, and create a list of their favorite movies.
 
-- [Getting Started](#getting-started)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Running the API](#running-the-api)
-- [Error Handling](#error-handling)
-- [Authentication](#authentication)
-- [Hosting](#hosting)
+## Context
 
-## Getting Started
+It’s no longer enough for JavaScript developers to be alone skilled in Front-end development; it’s also essential for them to be able to interface with and even create their APIs. For this reason, I built a REST API for an application called “myFlix” that interacts with a database that stores data about different movies.
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+## User Stories
 
-### Prerequisites
+- As a user, I should be able to receive information on movies, directors, and genres so that I can learn more about movies I've watched or am interested in
+- As a user, I should be able to create an account and log into it so that I can save data about my favorite movies
+- As a web developer, I should be able to access the JSDoc Documentation.
 
-- Node.js
-- MongoDB Atlas account or a local MongoDB instance
-- Vercel account for hosting (optional)
+## Essential Features
 
-### Installation
+- Return a list of ALL movies to the user
+- Return data (description, genre, director, image URL, whether it's featured or not) about a single movie by title to the user
+- Return data about a genre (description) by name/title (e.g., "Thriller")
+- Return data about a director (bio, birth year, death year) by name
+- Allow new users to register
+- Allow users to update their user info (username, password, email, date of birth)
+- Allow users to add a movie to their list of favorites
+- Allow users to remove a movie from their list of favorites
+- Allow existing users to delete their accounts
+- Allow web developers to access the JSDoc Documentation.
 
-1. Clone the repository:
+## Technical Requirements
 
-   ```sh
-   git clone https://github.com/your-username/movie_API_myFlix.git
-   cd movie_API_myFlix
-   ```
-
-2. Install dependencies:
-
-   ```sh
-   npm install
-   ```
-
-3. Create a `.env` file in the root directory and add your MongoDB connection string:
-
-   ```sh
-   CONNECTION_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/myFlixDB?retryWrites=true&w=majority
-   ```
-
-4. Optionally, add a port to your `.env` file:
-   ```sh
-   PORT=8080
-   ```
-
-## Running the API
-
-Start the server with the following command:
-
-```sh
-node index.js
-```
-
-By default, the server will run on `http://localhost:8080`.
-
-## Endpoints
-
-The API is hosted on VErcel at: [https://movieapi-aeueoes-projects.vercel.app/](https://movieapi-aeueoes-projects.vercel.app/)
-
-### Movies
-
-- **GET /movies**
-
-  - Returns a list of all movies.
-  - Authentication required.
-  - Example: `https://movieapi-aeueoes-projects.vercel.app/movies`
-
-- **GET /movies/:Title**
-
-  - Returns data about a single movie by title.
-  - Authentication required.
-  - Example: `https://movieapi-aeueoes-projects.vercel.app/movies/Fight%20Club`
-
-
-### Users
-
-- **GET /users**
-
-  - Returns a list of all users.
-  - Authentication required.
-  - Example: `https://movieapi-aeueoes-projects.vercel.app/users`
-
-- **GET /users/:Username**
-
-  - Returns data about a user by username.
-  - Authentication required.
-  - Example: `https://movieapi-aeueoes-projects.vercel.app/users/jerry`
-
-- 
-- **DELETE /users/:Username**
-  - Allows existing users to deregister.
-  - Authentication required.
-  - Example: `https://movieapi-aeueoes-projects.vercel.app/users/jerry`
-
-## Error Handling
-
-Errors are handled by a centralized middleware function that captures errors and sends a JSON response with an appropriate status code and message.
-
-## Authentication
-
-This API uses JWT (JSON Web Token) for authentication. To access protected routes, you need to include a valid JWT token in the `Authorization` header of your requests.
-
-### Login
-
-To log in and receive a JWT token, use the following endpoint:
-
-- **POST /login**
-  - Request body parameters: `Username`, `Password`.
-  - Example: `https://movieapi-aeueoes-projects.vercel.app/login`
+- The API must be a Node.js and Express application
+- The API must use REST architecture, with URL endpoints corresponding to the data operations listed above
+- The API must use at least three middleware modules, such as the body-parser package for reading data from requests and morgan for logging
+- The API must use a "package.json" file
+- The database must be built using MongoDB
+- The business logic must be modeled with Mongoose
+- The API must provide movie information in JSON format
+- The JavaScript code must be error-free
+- The API must be tested in Postman
+- The API must include user authentication and authorization code
+- The API must include data validation logic
+- The API must meet data security regulations
+- The API source code must be deployed to a publicly accessible platform like GitHub
+- The API must be deployed to Heroku
+- The API must provide JSDoc Documentation.
 
 ## Hosting
 
