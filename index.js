@@ -106,12 +106,12 @@ app.get(
 
 // Return list of all directors
 app.get(
-  "/movies/directors",
+  "/directors",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const movies = await Movie.find().distinct("Director.Name");
-      res.status(200).json(movies);
+      const directors = await Director.find();
+      res.status(200).json(directors);
     } catch (err) {
       console.error(err);
       res.status(500).send("Error: " + err);
@@ -121,15 +121,15 @@ app.get(
 
 // Return data about a director by name
 app.get(
-  "/movies/directors/:directorName",
+  "/directors/:directorName",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const movies = await Movie.find({
-        "Director.Name": req.params.directorName,
-      });
-      if (movies.length > 0) {
-        res.status(200).json(movies);
+      const directorName = req.params.directorName;
+      const director = await Director.findOne({ Name: directorName });
+
+      if (director) {
+        res.status(200).json(director);
       } else {
         res.status(404).send("Director not found");
       }
@@ -142,12 +142,12 @@ app.get(
 
 // Return list of all actors
 app.get(
-  "/movies/actors",
+  "/actors",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const movies = await Movie.find().distinct("Actors.Name");
-      res.status(200).json(movies);
+      const actors = await Actor.find();
+      res.status(200).json(actors);
     } catch (err) {
       console.error(err);
       res.status(500).send("Error: " + err);
@@ -157,13 +157,15 @@ app.get(
 
 // Return data about an actor by name
 app.get(
-  "/movies/actors/:actorName",
+  "/actors/:actorName",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const movies = await Movie.find({ "Actors.Name": req.params.actorName });
-      if (movies.length > 0) {
-        res.status(200).json(movies);
+      const actorName = req.params.actorName;
+      const actor = await Actor.findOne({ Name: actorName });
+
+      if (actor) {
+        res.status(200).json(actor);
       } else {
         res.status(404).send("Actor not found");
       }
