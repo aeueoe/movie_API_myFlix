@@ -84,7 +84,7 @@ app.get(
 );
 
 app.get('/genres', passport.authenticate('jwt', { session: false }), async (req, res) => {
-    await Movies.distinct("genre")
+    await Movie.distinct("genre")
         .then((movies) => {
             res.json(movies);
         })
@@ -124,7 +124,7 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const movies = await Movies.find().select("Director");
+      const movies = await Movie.find().select("Director").populate("Director"); 
       const directors = movies.map((movie) => movie.Director);
       res.status(200).json(directors);
     } catch (err) {
@@ -140,10 +140,9 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const directorName = req.params.directorName;
-      const movie = await Movies.findOne({ "Director.Name": directorName }, { "Director": 1 });
-      if (movie) {
-        res.status(200).json(movie.Director);
+      const director = await Director.findOne({ Name: req.params.directorName });
+      if (director) {
+        res.status(200).json(director);
       } else {
         res.status(404).send("Director not found");
       }
@@ -161,7 +160,7 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const movies = await Movies.find().select("Actors");
+      const movies = await Movie.find().select("Actors").populate("Actors"); 
       const actors = movies.flatMap((movie) => movie.Actors);
       res.status(200).json(actors);
     } catch (err) {
@@ -177,8 +176,7 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const actorName = req.params.actorName;
-      const movies = await Movies.find({ "Actors.Name": actorName }, { "Actors.$": 1 });
+      const movies = await Movie.find({ "Actors.Name": req.params.actorName }, { "Actors.$": 1 }).populate("Actors");
       const actor = movies.map((movie) => movie.Actors[0])[0];
       if (actor) {
         res.status(200).json(actor);
