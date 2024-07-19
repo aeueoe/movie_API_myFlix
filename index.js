@@ -69,7 +69,9 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const movie = await Movie.findOne({ Title: req.params.title });
+      const movie = await Movie.findOne({ Title: req.params.title })
+        .populate("Director")
+        .populate("Actors");
       if (movie) {
         res.status(200).json(movie);
       } else {
