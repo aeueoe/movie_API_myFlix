@@ -4,41 +4,70 @@ const bcrypt = require("bcrypt");
 
 // Movie Schema
 const movieSchema = new Schema({
-  Title: { type: String, required: true },
-  Description: { type: String, required: true },
-  Genre: {
-    Name: { type: String, required: true },
-    Description: { type: String, required: true },
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  countryOfOrigin: { type: String },
+  imagePath: { type: String },
+  featured: { type: Boolean },
+  releaseYear: { type: String },
+  iMDb_Rating: { type: String },
+  rottenTomatoesRating: { type: String },
+  runtime: { type: String },
+  language: { type: String },
+  genre: {
+    name: { type: String, required: true },
+    description: { type: String, required: true },
   },
-  Director: { type: Schema.Types.ObjectId, ref: "Director" },
-  ImagePath: { type: String },
-  Featured: { type: Boolean },
-  ReleaseYear: { type: Number },
-  Rating: { type: String },
-  Actors: [{ type: Schema.Types.ObjectId, ref: "Actor" }],
+  director: { type: Schema.Types.ObjectId, ref: "Director" },
+  actors: [
+    {
+      actor: { type: Schema.Types.ObjectId, ref: "Actor" },
+      character: { type: String },
+    },
+  ],
+  awards: [
+    {
+      name: { type: String },
+      year: { type: String },
+      wins: { type: String },
+      nominations: { type: String },
+      description: { type: String },
+    },
+  ],
 });
 
 // Director Schema
 const directorSchema = new Schema({
-  Name: { type: String, required: true },
-  Bio: { type: String, required: true },
-  Birth: { type: Date },
-  Death: { type: Date },
-  Movies: [{ Title: String }],
+  name: { type: String, required: true },
+  birth: { type: String },
+  death: { type: String },
+  country: { type: String },
+  bio: { type: String, required: true },
+  otherFilms: [{ type: String }],
 });
 
 // Actor Schema
 const actorSchema = new Schema({
-  Name: { type: String, required: true },
-  Bio: { type: String, required: true },
-  Birth: { type: Date },
-  Death: { type: Date },
-  Awards: [{ Name: String, Year: Number, Wins: Number, Nominations: Number, Description: String }],
-  Movies: [{ Title: String, Character: String }],
+  name: { type: String, required: true },
+  birth: { type: String },
+  death: { type: String },
+  bio: { type: String, required: true },
+  movies: [
+    {
+      movie: { type: Schema.Types.ObjectId, ref: "Movie" },
+      character: { type: String },
+    },
+  ],
+  awards: [
+    {
+      name: { type: String },
+      year: { type: String },
+      description: { type: String },
+    },
+  ],
 });
 
 // User Schema
-
 const userSchema = new Schema({
   Username: { type: String, required: true },
   Email: { type: String, required: true, unique: true },
