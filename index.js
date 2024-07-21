@@ -63,14 +63,15 @@ app.get(
   }
 );
 
-
 // Return data about a single film by title
 app.get(
   "/movies/:title",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const movie = await Movie.findOne({ Title: req.params.title });
+      const title = req.params.title;
+      const movie = await Movie.findOne({ Title: title });
+
       if (movie) {
         res.status(200).json(movie);
       } else {
@@ -83,29 +84,33 @@ app.get(
   }
 );
 
-
 // Return data about a genre by name/title
 app.get(
-  "/movies/genres/:Name",
+  "/movies/genres/:name",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const genre = await Movie.findOne(
-        { "Genre.Name": req.params.Name },
-        "Genre"
-      );
-      if (genre) {
-        res.status(200).json(genre.Genre);
+      console.log(`Fetching genre: ${req.params.name}`);
+      const movie = await Movie.findOne({
+        "genre.name": req.params.name,
+      });
+
+      if (movie) {
+        const genre = movie.genre;
+        console.log(`Genre found: ${JSON.stringify(genre)}`);
+        res
+          .status(200)
+          .json({ name: genre.name, description: genre.description });
       } else {
-        res.status(400).send("Genre not found");
+        console.log("Genre not found");
+        res.status(404).send("Genre not found");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error: ", err);
       res.status(500).send("Error: " + err);
     }
   }
 );
-
 
 // Return data about a director by name
 app.get(
@@ -114,33 +119,15 @@ app.get(
   async (req, res) => {
     try {
       const directorName = req.params.directorName;
-      const director = await Director.findOne({ Name: directorName });
+
+      const director = await Director.findOne({
+        name: directorName,
+      });
 
       if (director) {
         res.status(200).json(director);
       } else {
         res.status(404).send("Director not found");
-      }
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    }
-  }
-);
-
-// Return data about an actor by name
-app.get(
-  "/actors/:actorName",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    try {
-      const actorName = req.params.actorName;
-      const actor = await Actor.findOne({ Name: actorName });
-
-      if (actor) {
-        res.status(200).json(actor);
-      } else {
-        res.status(404).send("Actor not found");
       }
     } catch (err) {
       console.error(err);

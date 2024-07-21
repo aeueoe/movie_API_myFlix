@@ -19,7 +19,7 @@ const movieSchema = new Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
   },
-  director: { type: Schema.Types.ObjectId, ref: "Director" },
+  director: { name: { type: String, required: true } },
   actors: [
     {
       actor: { type: Schema.Types.ObjectId, ref: "Actor" },
