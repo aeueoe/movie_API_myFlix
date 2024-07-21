@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 
 // Movie Schema
 const movieSchema = new Schema({
+  id: { type: Schema.Types.ObjectId },
   title: { type: String, required: true },
   description: { type: String, required: true },
   countryOfOrigin: { type: String },
@@ -48,6 +49,7 @@ const directorSchema = new Schema({
 
 // Actor Schema
 const actorSchema = new Schema({
+  id: { type: Schema.Types.ObjectId },
   name: { type: String, required: true },
   birth: { type: String },
   death: { type: String },
@@ -73,7 +75,7 @@ const userSchema = new Schema({
   Email: { type: String, required: true, unique: true },
   Password: { type: String, required: true },
   Birthday: { type: Date },
-  favoriteMovies: [{ type: Schema.Types.ObjectId, ref: "Movie" }],
+  Favorite: [{ type: Schema.Types.ObjectId, ref: "Movie" }],
 });
 
 userSchema.statics.hashPassword = (password) => {
