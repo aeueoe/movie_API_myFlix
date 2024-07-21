@@ -83,17 +83,6 @@ app.get(
   }
 );
 
-app.get('/genres', passport.authenticate('jwt', { session: false }), async (req, res) => {
-    await Movie.distinct("genre")
-        .then((movies) => {
-            res.json(movies);
-        })
-        .catch((err) => {
-            console.error(err);
-            res.status(500).send('Error: ' + err);
-        });
-});
-
 
 // Return data about a genre by name/title
 app.get(
@@ -117,20 +106,6 @@ app.get(
   }
 );
 
-// Return list of all directors
-app.get(
-  "/directors",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    try {
-      const directors = await Director.find();
-      res.status(200).json(directors);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    }
-  }
-);
 
 // Return data about a director by name
 app.get(
@@ -146,21 +121,6 @@ app.get(
       } else {
         res.status(404).send("Director not found");
       }
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    }
-  }
-);
-
-// Return list of all actors
-app.get(
-  "/actors",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    try {
-      const actors = await Actor.find();
-      res.status(200).json(actors);
     } catch (err) {
       console.error(err);
       res.status(500).send("Error: " + err);
