@@ -56,7 +56,7 @@ const actorSchema = new Schema({
   bio: { type: String, required: true },
   movies: [
     {
-      movie: { type: Schema.Types.ObjectId, ref: "Movie" },
+      movie: { type: String },
       character: { type: String },
     },
   ],
@@ -75,7 +75,7 @@ const userSchema = new Schema({
   Email: { type: String, required: true, unique: true },
   Password: { type: String, required: true },
   Birthday: { type: Date },
-  Favorite: [{ type: Schema.Types.ObjectId, ref: "Movie" }],
+  favoriteMovies: [{ type: Schema.Types.ObjectId, ref: "Movie" }],
 });
 
 userSchema.statics.hashPassword = (password) => {
