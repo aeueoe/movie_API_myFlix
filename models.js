@@ -22,7 +22,7 @@ const movieSchema = new Schema({
   director: { name: { type: String, required: true } },
   actors: [
     {
-      actor: { type: Schema.Types.ObjectId, ref: "Actor" },
+      name: { type: String, required: true },
       character: { type: String },
     },
   ],
@@ -54,7 +54,16 @@ const actorSchema = new Schema({
   birth: { type: String },
   death: { type: String },
   bio: { type: String, required: true },
+<<<<<<< HEAD
   movies: [{ type: String }],
+=======
+  movies: [
+    {
+      movie: { type: String },
+      character: { type: String },
+    },
+  ],
+>>>>>>> ff3b6ad5738dae45ee9b32d6f70f470ec525c6e6
   awards: [
     {
       name: { type: String },
