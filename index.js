@@ -91,9 +91,13 @@ app.get(
     try {
       console.log("Fetching all genres");
       const genres = await Movie.distinct("genre");
-
-      console.log(`Found ${genres.length} genres`);
-      res.status(200).json(genres);
+      if (genres) {
+        console.log(`Found ${genres.length} genres: ${JSON.stringify(genres)}`);
+        res.status(200).json(genres);
+      } else {
+        console.log("No genres found");
+        res.status(404).send("No genres found");
+      }
     } catch (err) {
       console.error("Error fetching genres: ", err);
       res.status(500).send("Error fetching genres: " + err);
@@ -176,7 +180,6 @@ app.get(
     }
   }
 );
-
 
 // Allow new user to register
 app.post(
@@ -302,16 +305,16 @@ app.post(
             } else {
               user.favoriteMovies.push(movieId);
               await user.save();
-              res
-                .status(200)
-                .send(`${movie.Title} has been added to favorites`);
+              res.status(200).send("Movie has been added to favorites");
             }
           } else {
             res.status(404).send("Movie not found");
           }
         } else {
-          res.status(404).send("User not found");
+          res.status(404).send("Invalid movie ID");
         }
+      } else {
+        res.status(404).send("User not found");
       }
     } catch (err) {
       console.error(err);
@@ -319,6 +322,7 @@ app.post(
     }
   }
 );
+
 // Allow users to remove a film from their list of favorites
 app.delete(
   "/users/:Username/favoriteMovies/:movieId",
@@ -335,9 +339,7 @@ app.delete(
           const movie = await Movie.findById(movieId).exec();
           user.favoriteMovies.pull(movieId);
           await user.save();
-          res
-            .status(200)
-            .send(`${movie.Title} has been removed from favorites`);
+          res.status(200).send("Movie has been removed from favorites");
         } else {
           res.status(404).send("Movie not found in favorites");
         }
