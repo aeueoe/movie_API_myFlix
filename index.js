@@ -264,6 +264,7 @@ app.put(
     if (req.body.Username) updateFields.Username = req.body.Username;
     if (req.body.Password) updateFields.Password = req.body.Password;
     if (req.body.Email) updateFields.Email = req.body.Email;
+    if (req.body.Birthday) updateFields.Birthday = req.body.Birthday;
 
     try {
       const updatedUser = await User.findOneAndUpdate(
