@@ -208,17 +208,18 @@ app.get(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
+    console.log(`Received request for user ${req.params.Username}`);
     Users.findOne({ Username: req.params.Username })
       .then((user) => {
+        console.log(`Found user: ${user}`);
         res.json(user);
       })
       .catch((err) => {
-        console.error(err);
+        console.error(`Error fetching user: ${err}`);
         res.status(500).send("Error: " + err);
       });
   }
 );
-
 
 // Allow new user to register
 app.post(
